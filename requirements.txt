@@ -1,0 +1,7 @@
+accelerate
+diffusers
+Pillow
+torch
+transformers
+xformers
+bentoml>=1.2.0a0
