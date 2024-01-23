@@ -1,6 +1,6 @@
 This project builds an image generation application using BentoML, powered by [diffusers](https://github.com/huggingface/diffusers) and [SDXL Turbo](https://huggingface.co/stabilityai/sdxl-turbo).
 
-## **Prerequisites**
+## Prerequisites
 
 - You have installed Python 3.8+ and `pip`. See the [Python downloads page](https://www.python.org/downloads/) to learn more.
 - You have a basic understanding of key concepts in BentoML, such as Services. We recommend you read [Quickstart](https://docs.bentoml.com/en/1.2/get-started/quickstart.html) first.
@@ -52,7 +52,6 @@ with bentoml.SyncHTTPClient("http://localhost:3000") as client:
             guidance_scale=0.0
         )
 ```
-
 
 ## Deploy to production
 
