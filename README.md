@@ -1,11 +1,11 @@
-This document demonstrates how to build an image generation application using BentoML, powered by [diffusers](https://github.com/huggingface/diffusers) and [SDXL Turbo](https://huggingface.co/stabilityai/sdxl-turbo).
+This project builds an image generation application using BentoML, powered by [diffusers](https://github.com/huggingface/diffusers) and [SDXL Turbo](https://huggingface.co/stabilityai/sdxl-turbo).
 
-## **Prerequisites**
+## Prerequisites
 
 - You have installed Python 3.8+ and `pip`. See the [Python downloads page](https://www.python.org/downloads/) to learn more.
-- You have a basic understanding of key concepts in BentoML, such as Services. We recommend you read [Quickstart](https://docs.bentoml.com/en/latest/get-started/quickstart.html) first.
-- (Optional) We recommend you create a virtual environment for dependency isolation for this project. See Installation for details.
-- To run the service locally, you need a Nvidia GPU with at least 12G VRAM.
+- You have a basic understanding of key concepts in BentoML, such as Services. We recommend you read [Quickstart](https://docs.bentoml.com/en/1.2/get-started/quickstart.html) first.
+- (Optional) We recommend you create a virtual environment for dependency isolation for this project. See the [Conda documentation](https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html) or the [Python documentation](https://docs.python.org/3/library/venv.html) for details.
+- To run the Service locally, you need a Nvidia GPU with at least 12G VRAM.
 
 ## Install dependencies
 
@@ -24,7 +24,7 @@ $ bentoml serve .
 Loading pipeline components...: 100%
 ```
 
-The server is now active at [http://0.0.0.0:3000](http://0.0.0.0:3000/). You can interact with it using Swagger UI or in other different ways.
+The server is now active at [http://0.0.0.0:3000](http://0.0.0.0:3000/). You can interact with it using the Swagger UI or in other different ways.
 
 CURL
 
@@ -40,16 +40,29 @@ curl -X 'POST' \
 }'
 ```
 
-## Deploy the application to BentoCloud
+BentoML client
+
+```python
+import bentoml
+
+with bentoml.SyncHTTPClient("http://localhost:3000") as client:
+        result = client.txt2img(
+            prompt="A cinematic shot of a baby racoon wearing an intricate italian priest robe.",
+            num_inference_steps=1,
+            guidance_scale=0.0
+        )
+```
+
+## Deploy to production
 
 After the Service is ready, you can deploy the application to BentoCloud for better management and scalability. A configuration YAML file (`bentofile.yaml`) is used to define the build options for your application. It is used for packaging your application into a Bento. See [Bento build options](https://docs.bentoml.com/en/latest/concepts/bento.html#bento-build-options) to learn more.
 
-Make sure you have logged in to BentoCloud, then run the following command in your project directory to deploy the application to BentoCloud. Under the hood, this commands automatically builds a Bento, push the Bento to BentoCloud, and deploy it on BentoCloud.
+Make sure you have [logged in to BentoCloud](https://docs.bentoml.com/en/1.2/bentocloud/how-tos/manage-access-token.html), then run the following command in your project directory to deploy the application to BentoCloud.
 
 ```bash
 bentoml deploy .
 ```
 
-**Note**: Alternatively, you can manually build the Bento, containerize the Bento as a Docker image, and deploy it in any Docker-compatible environment. See [Docker deployment](https://docs.bentoml.org/en/latest/concepts/deploy.html#docker) for details.
+**Note**: Alternatively, you can use BentoML to generate a [Docker image](https://docs.bentoml.com/en/1.2/guides/containerization.html) for a custom deployment.
 
 Once the application is up and running on BentoCloud, you can access it via the exposed URL.
