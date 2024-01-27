@@ -8,7 +8,12 @@ sample_prompt = "A cinematic shot of a baby racoon wearing an intricate italian 
 @bentoml.service(
     traffic={"timeout": 300},
     workers=1,
-    resources={"gpu": 1, "memory": "12Gi"},
+    resources={
+        "gpu": 1,
+        "gpu_type": "nvidia-l4",
+        # we can also specify GPU memory requirement:
+        # "memory": "16Gi",
+    },
 )
 class SDXLTurboService:
     def __init__(self) -> None:
