@@ -10,6 +10,8 @@ This project builds an image generation application using BentoML, powered by [d
 ## Install dependencies
 
 ```bash
+git clone https://github.com/bentoml/BentoSDXLTurbo.git
+cd BentoSDXLTurbo
 pip install -r requirements.txt
 ```
 
