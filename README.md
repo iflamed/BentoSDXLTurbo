@@ -24,13 +24,13 @@ $ bentoml serve .
 Loading pipeline components...: 100%
 ```
 
-The server is now active at [http://0.0.0.0:3000](http://0.0.0.0:3000/). You can interact with it using the Swagger UI or in other different ways.
+The server is now active at [http://localhost:3000](http://localhost:3000/). You can interact with it using the Swagger UI or in other different ways.
 
 CURL
 
 ```bash
 curl -X 'POST' \
-  'http://0.0.0.0:3000/txt2img' \
+  'http://localhost:3000/txt2img' \
   -H 'accept: image/*' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -63,6 +63,6 @@ Make sure you have [logged in to BentoCloud](https://docs.bentoml.com/en/1.2/ben
 bentoml deploy .
 ```
 
-**Note**: Alternatively, you can use BentoML to generate a [Docker image](https://docs.bentoml.com/en/1.2/guides/containerization.html) for a custom deployment.
-
 Once the application is up and running on BentoCloud, you can access it via the exposed URL.
+
+**Note**: Alternatively, you can use BentoML to generate a [Docker image](https://docs.bentoml.com/en/1.2/guides/containerization.html) for a custom deployment.
