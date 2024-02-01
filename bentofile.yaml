@@ -1,4 +1,4 @@
-service: "service:SDXLTurboService"
+service: "service:SDXLTurbo"
 labels:
   owner: bentoml-team
   project: gallery

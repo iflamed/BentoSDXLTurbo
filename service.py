@@ -15,7 +15,7 @@ sample_prompt = "A cinematic shot of a baby racoon wearing an intricate italian 
         # "memory": "16Gi",
     },
 )
-class SDXLTurboService:
+class SDXLTurbo:
     def __init__(self) -> None:
         from diffusers import AutoPipelineForText2Image
         import torch
