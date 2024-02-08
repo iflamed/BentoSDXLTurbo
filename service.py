@@ -1,5 +1,8 @@
 import bentoml
 from PIL.Image import Image
+from annotated_types import Le, Ge
+from typing_extensions import Annotated
+
 
 MODEL_ID = "stabilityai/sdxl-turbo"
 
@@ -29,7 +32,7 @@ class SDXLTurbo:
     def txt2img(
             self,
             prompt: str = sample_prompt,
-            num_inference_steps: int = 1,
+            num_inference_steps: Annotated[int, Ge(1), Le(10)] = 1,
             guidance_scale: float = 0.0,
     ) -> Image:
         image = self.pipe(
