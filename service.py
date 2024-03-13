@@ -2,7 +2,7 @@ import bentoml
 from PIL.Image import Image
 from annotated_types import Le, Ge
 from typing_extensions import Annotated
-from diffusers.utils import load_image, make_image_grid
+from diffusers.utils import load_image
 from diffusers import AutoPipelineForText2Image
 from diffusers import AutoPipelineForImage2Image
 import torch
