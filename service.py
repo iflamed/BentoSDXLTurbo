@@ -8,12 +8,16 @@ from diffusers import AutoPipelineForImage2Image
 import torch, gc
 import io
 import base64
+import logging
 
 MODEL_ID = "stabilityai/sdxl-turbo"
 
 sample_prompt = "A cinematic shot of a baby racoon wearing an intricate italian priest robe."
 sample_image = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/cat.png"
-auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMd*****"
+auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMdcew6B"
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 @bentoml.service(
     traffic={"timeout": 300},
@@ -25,6 +29,7 @@ auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMd*****"
 )
 class SDXLTurbo:
     def __init__(self) -> None:
+        logger.info("start to loading pipeline")
         self.pipe = AutoPipelineForText2Image.from_pretrained(
             MODEL_ID,
             torch_dtype=torch.float16,
@@ -32,6 +37,7 @@ class SDXLTurbo:
         )
         self.pipe.to(device="cuda")
         self.pipeline = AutoPipelineForImage2Image.from_pipe(self.pipe).to("cuda")
+        logger.info("finish to load pipeline")
     
     def formatJPEGResponse(self, image) -> dict:
         black = False
@@ -105,7 +111,17 @@ class SDXLTurbo:
             imgStr = image_url.replace("data:image/jpeg;base64,", "", 1)
             imgStr = imgStr.replace("data:image/png;base64,", "", 1)
             init_image = Image.open(io.BytesIO(base64.b64decode(imgStr)))
-        init_image = init_image.resize((512, 512))
+        maxW = init_image.width
+        maxH = init_image.height
+        if maxW > 960:
+            maxW = 960
+        if maxH > 960:
+            maxH = 960
+        ratio = min(maxW/init_image.width, maxH/init_image.height)
+        width = int(init_image.width * ratio)
+        height = int(init_image.height * ratio)
+        logger.info("resize input image to %d x %d with ratio %f", width, height, ratio)
+        init_image = init_image.resize((width, height))
 
         image = None
         try:
