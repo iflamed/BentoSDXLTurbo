@@ -52,7 +52,9 @@ class SDXLTurbo:
             "images": [
                 {
                     "url": "data:image/jpeg;base64,".encode() + contents,
-                    "content_type": "image/jpeg"
+                    "content_type": "image/jpeg",
+                    "width": image.width,
+                    "height": image.height
                 }
             ],
         }
