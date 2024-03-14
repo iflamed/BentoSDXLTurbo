@@ -1,11 +1,11 @@
 import bentoml
-from PIL.Image import Image
+from PIL import Image
 from annotated_types import Le, Ge
 from typing_extensions import Annotated
 from diffusers.utils import load_image
 from diffusers import AutoPipelineForText2Image
 from diffusers import AutoPipelineForImage2Image
-import torch
+import torch, gc
 import io
 import base64
 
@@ -13,6 +13,7 @@ MODEL_ID = "stabilityai/sdxl-turbo"
 
 sample_prompt = "A cinematic shot of a baby racoon wearing an intricate italian priest robe."
 sample_image = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/cat.png"
+auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMd*****"
 
 @bentoml.service(
     traffic={"timeout": 300},
@@ -56,7 +57,13 @@ class SDXLTurbo:
             prompt: str = sample_prompt,
             num_inference_steps: Annotated[int, Ge(1), Le(10)] = 1,
             guidance_scale: float = 0.0,
+            key: str = "",
     ) -> dict:
+        if key != auth_key:
+            return {
+                "code": 403
+            }
+        
         image = self.pipe(
             prompt=prompt,
             num_inference_steps=num_inference_steps,
@@ -72,15 +79,39 @@ class SDXLTurbo:
             num_inference_steps: Annotated[int, Ge(1), Le(10)] = 2,
             guidance_scale: float = 0.0,
             strength: float = 0.5,
+            key: str = "",
     ) -> dict:
-        init_image = load_image(image_url)
+        if key != auth_key:
+            return {
+                "code": 403
+            }
+        
+        init_image = None
+        if image_url.startswith("http://") or image_url.startswith("https://"):
+            init_image = load_image(image_url)
+        else:
+            imgStr = image_url.replace("data:image/jpeg;base64,", "", 1)
+            imgStr = imgStr.replace("data:image/png;base64,", "", 1)
+            init_image = Image.open(io.BytesIO(base64.b64decode(imgStr)))
         init_image = init_image.resize((512, 512))
 
-        image = self.pipeline(
-            prompt,
-            image=init_image,
-            strength=strength,
-            guidance_scale=guidance_scale,
-            num_inference_steps=num_inference_steps,
-        ).images[0]
+        image = None
+        try:
+            image = self.pipeline(
+                prompt,
+                image=init_image,
+                strength=strength,
+                guidance_scale=guidance_scale,
+                num_inference_steps=num_inference_steps,
+            ).images[0]
+        except Exception as err:
+            print(err)
+            gc.collect()
+            torch.cuda.empty_cache()
+
+        if image is None:
+            return {
+                "code": 500
+            }
+
         return self.formatJPEGResponse(image)
