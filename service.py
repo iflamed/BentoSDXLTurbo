@@ -14,7 +14,7 @@ MODEL_ID = "stabilityai/sdxl-turbo"
 
 sample_prompt = "A cinematic shot of a baby racoon wearing an intricate italian priest robe."
 sample_image = "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/cat.png"
-auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMdcew6B"
+auth_key = "Cws5ddVL9CD1UdpWLTK1MYO0LMd*****"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
