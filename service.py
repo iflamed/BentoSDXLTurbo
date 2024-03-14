@@ -63,12 +63,24 @@ class SDXLTurbo:
             return {
                 "code": 403
             }
-        
-        image = self.pipe(
-            prompt=prompt,
-            num_inference_steps=num_inference_steps,
-            guidance_scale=guidance_scale,
-        ).images[0]
+
+        image = None
+        try:
+            image = self.pipe(
+                prompt=prompt,
+                num_inference_steps=num_inference_steps,
+                guidance_scale=guidance_scale,
+            ).images[0]
+        except Exception as err:
+            print(err)
+            gc.collect()
+            torch.cuda.empty_cache()
+
+        if image is None:
+            return {
+                "code": 500
+            }
+
         return self.formatJPEGResponse(image)
 
     @bentoml.api
