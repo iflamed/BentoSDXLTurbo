@@ -26,7 +26,7 @@ pip install -r requirements.txt
 We have defined a BentoML Service in `service.py`. Run `bentoml serve` in your project directory to start the Service.
 
 ```python
-$ bentoml serve .
+$ BENTOML_PORT=6006 bentoml serve .
 
 2024-01-18T18:31:49+0800 [INFO] [cli] Starting production HTTP BentoServer from "service:SDXLTurboService" listening on http://localhost:3000 (Press CTRL+C to quit)
 Loading pipeline components...: 100%
